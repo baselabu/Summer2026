@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Student_Tracker</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>245a4444-5bb5-4a85-8277-3a1a867f8a86</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="ClassesFolder/" />
+  </ItemGroup>
+
+</Project>
