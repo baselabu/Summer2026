@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <Folder Include="ClassesFolder/" />
+    <Folder Include="InterfaceFolder/" />
   </ItemGroup>
 
 </Project>

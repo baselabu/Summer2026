@@ -12,7 +12,7 @@ public class Teacher : Person
         Console.WriteLine($"Class Report for Teacher: {Name}");
         foreach (Student student in students)
         {
-            Console.WriteLine($"{student.Name}: Average Grade = {student.GetAverageGrade():F2}, Letter Grade = {student.GetLetterGrade()}");
+            Console.WriteLine($"{student.Name}: Average Grade = {student.AverageGrade():F2}, Letter Grade = {student.LetterGrade()}");
         }
     }
 

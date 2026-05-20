@@ -13,3 +13,13 @@ foreach (Student student in students)
 
 Teacher teacher = new Teacher("Mr. Smith");
 teacher.PrintClassReport(students);
+
+List<CourseSection> courseSections = new List<CourseSection>
+{
+    new CourseSection("Math 101", "Mr. Smith"),
+    new CourseSection("History 201", "Ms. Johnson")
+};
+foreach (CourseSection course in courseSections)
+{
+    Console.WriteLine($"Course: {course.CourseName}, Instructor: {course.Instructor}");
+}

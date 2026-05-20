@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Student_Tracker.InterfaceFolder;
 
 namespace Student_Tracker.ClassesFolder;
 
-public class Student
+public class Student : IGradeable
 {
     private String? name;
     private List<double> grades = new List<double>();
@@ -31,7 +32,7 @@ public class Student
         Grades = grades ?? new List<double>();
     }
 
-    public double GetAverageGrade()
+    public double AverageGrade()
     {
         if (Grades.Count == 0)
         {
@@ -44,9 +45,9 @@ public class Student
         }
         return sum / Grades.Count;
     }
-    public string GetLetterGrade()
+    public string LetterGrade()
     {
-        double average = GetAverageGrade();
+        double average = AverageGrade();
         if (average >= 90)
         {
             return "A";
@@ -70,6 +71,6 @@ public class Student
     }
     public void ResultMessage()
     {
-        Console.WriteLine($"Student: {Name}, Average Grade: {GetAverageGrade():F2}, Letter Grade: {GetLetterGrade()}");
+        Console.WriteLine($"Student: {Name}, Average Grade: {AverageGrade():F2}, Letter Grade: {LetterGrade()}");
     }
 }
