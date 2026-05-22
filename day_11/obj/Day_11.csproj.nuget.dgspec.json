@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/sarb/Desktop/Summer2026/Day_11/Day_11.csproj": {}
+    "/home/sarb/Desktop/Summer2026/day_11/Day_11.csproj": {}
   },
   "projects": {
-    "/home/sarb/Desktop/Summer2026/Day_11/Day_11.csproj": {
+    "/home/sarb/Desktop/Summer2026/day_11/Day_11.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/sarb/Desktop/Summer2026/Day_11/Day_11.csproj",
+        "projectUniqueName": "/home/sarb/Desktop/Summer2026/day_11/Day_11.csproj",
         "projectName": "Day_11",
-        "projectPath": "/home/sarb/Desktop/Summer2026/Day_11/Day_11.csproj",
+        "projectPath": "/home/sarb/Desktop/Summer2026/day_11/Day_11.csproj",
         "packagesPath": "/home/sarb/.nuget/packages/",
-        "outputPath": "/home/sarb/Desktop/Summer2026/Day_11/obj/",
+        "outputPath": "/home/sarb/Desktop/Summer2026/day_11/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/sarb/.nuget/NuGet/NuGet.Config"
