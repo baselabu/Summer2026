@@ -34,6 +34,13 @@ public class Student : IGradeable
 
     public double AverageGrade()
     {
+        foreach (double grade in Grades)
+        {
+            if (grade < 0 || grade > 100)
+            {
+                throw new ArgumentException("Grades must be between 0 and 100.");
+            }
+        }
         if (Grades.Count == 0)
         {
             return 0;
