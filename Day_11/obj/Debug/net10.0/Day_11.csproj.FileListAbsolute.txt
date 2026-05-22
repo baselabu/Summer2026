@@ -1,0 +1,15 @@
+/home/sarb/Desktop/Summer2026/Day_11/bin/Debug/net10.0/Day_11
+/home/sarb/Desktop/Summer2026/Day_11/bin/Debug/net10.0/Day_11.deps.json
+/home/sarb/Desktop/Summer2026/Day_11/bin/Debug/net10.0/Day_11.runtimeconfig.json
+/home/sarb/Desktop/Summer2026/Day_11/bin/Debug/net10.0/Day_11.dll
+/home/sarb/Desktop/Summer2026/Day_11/bin/Debug/net10.0/Day_11.pdb
+/home/sarb/Desktop/Summer2026/Day_11/obj/Debug/net10.0/Day_11.GeneratedMSBuildEditorConfig.editorconfig
+/home/sarb/Desktop/Summer2026/Day_11/obj/Debug/net10.0/Day_11.AssemblyInfoInputs.cache
+/home/sarb/Desktop/Summer2026/Day_11/obj/Debug/net10.0/Day_11.AssemblyInfo.cs
+/home/sarb/Desktop/Summer2026/Day_11/obj/Debug/net10.0/Day_11.csproj.CoreCompileInputs.cache
+/home/sarb/Desktop/Summer2026/Day_11/obj/Debug/net10.0/Day_11.sourcelink.json
+/home/sarb/Desktop/Summer2026/Day_11/obj/Debug/net10.0/Day_11.dll
+/home/sarb/Desktop/Summer2026/Day_11/obj/Debug/net10.0/refint/Day_11.dll
+/home/sarb/Desktop/Summer2026/Day_11/obj/Debug/net10.0/Day_11.pdb
+/home/sarb/Desktop/Summer2026/Day_11/obj/Debug/net10.0/Day_11.genruntimeconfig.cache
+/home/sarb/Desktop/Summer2026/Day_11/obj/Debug/net10.0/ref/Day_11.dll
