@@ -1,5 +1,4 @@
-﻿
-using Student_Tracker.ClassesFolder;
+﻿using Student_Tracker.ClassesFolder;
 List<Student> students = StudentStorage.Load();
 
 if (students.Count == 0)
@@ -15,13 +14,12 @@ if (students.Count == 0)
 
     StudentStorage.Save(students);
 }
-
-var topStudent = students.OrderByDescending(s => s.AverageGrade()).FirstOrDefault();
+var topStudent = StudentOperations.GetTopStudents(students, 1).FirstOrDefault();
 if (topStudent != null){
     Console.WriteLine($"Top student: {topStudent.Name} with average grade {topStudent.AverageGrade():F2} ({topStudent.LetterGrade()})");
 }
 
-var AverageStudents80OrAbove = students.Where(s => s.AverageGrade() >= 80).ToList();
+var AverageStudents80OrAbove = StudentOperations.GetFailingStudents(students, 80);
 Console.WriteLine("Students with average grade 80 or above:");
 foreach (Student student in AverageStudents80OrAbove)
 {
@@ -31,8 +29,7 @@ foreach (Student student in AverageStudents80OrAbove)
 Teacher teacher = new Teacher("Mr. Smith");
 teacher.PrintClassReport(students);
 
-List<CourseSection> courseSections = new List<CourseSection>
-{
+List<CourseSection> courseSections = new List<CourseSection>{
     new CourseSection("Math 101", "Mr. Smith"),
     new CourseSection("History 201", "Ms. Johnson")
 };
