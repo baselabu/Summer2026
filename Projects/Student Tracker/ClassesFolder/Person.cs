@@ -22,4 +22,3 @@ public class Person
     }
 
 }
-//Teacher class (inherits from Person class)
