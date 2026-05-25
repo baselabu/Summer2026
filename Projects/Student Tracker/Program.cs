@@ -1,12 +1,20 @@
 ﻿
 using Student_Tracker.ClassesFolder;
-List<Student> students = new List<Student>{
-    new Student("Alice", new List<double> { 100, 90, 78 }),
-    new Student("Bob", new List<double> { 92, 88, 95 }),
-    new Student("Charlie", new List<double> { 70, 75, 80 }),
-    new Student("Diana", new List<double> { 85, 87, 90 }),
-    new Student("Ethan", new List<double> { 30, 45, 58 })
-};
+List<Student> students = StudentStorage.Load();
+
+if (students.Count == 0)
+{
+    students = new List<Student>
+    {
+        new Student("Alice", new List<double> { 100, 90, 78 }),
+        new Student("Bob", new List<double> { 92, 88, 95 }),
+        new Student("Charlie", new List<double> { 70, 75, 80 }),
+        new Student("Diana", new List<double> { 85, 87, 90 }),
+        new Student("Ethan", new List<double> { 30, 45, 58 })
+    };
+
+    StudentStorage.Save(students);
+}
 
 var topStudent = students.OrderByDescending(s => s.AverageGrade()).FirstOrDefault();
 if (topStudent != null){

@@ -1,0 +1,42 @@
+[
+  {
+    "Name": "Alice",
+    "Grades": [
+      100,
+      90,
+      78
+    ]
+  },
+  {
+    "Name": "Bob",
+    "Grades": [
+      92,
+      88,
+      95
+    ]
+  },
+  {
+    "Name": "Charlie",
+    "Grades": [
+      70,
+      75,
+      80
+    ]
+  },
+  {
+    "Name": "Diana",
+    "Grades": [
+      85,
+      87,
+      90
+    ]
+  },
+  {
+    "Name": "Ethan",
+    "Grades": [
+      30,
+      45,
+      58
+    ]
+  }
+]
