@@ -10,14 +10,22 @@ namespace Inventory_Manager.Classes
         private string _name = "";
         private int _quantity;
         private double _price;
+        private int _id;
 
-        public int Id { get; set; }
+        public int Id { 
+            get => _id;
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentException("ID cannot be negative.");
+                }
+                _id = value;
+            }
+        }
         public string Name
         {
-            get
-            {
-                return _name;
-            }
+            get => _name;
             set
             {
             if (string.IsNullOrEmpty(value))
@@ -29,10 +37,8 @@ namespace Inventory_Manager.Classes
         }
         public int Quantity
         {
-            get
-            {
-                return _quantity;
-            }
+            get => _quantity;
+
             set
             {
                 if (value < 0)
@@ -44,10 +50,7 @@ namespace Inventory_Manager.Classes
         }
         public double Price
         {
-            get
-            {
-                return _price;
-            }
+            get => _price;
             set
             {
                 if (value < 0)
