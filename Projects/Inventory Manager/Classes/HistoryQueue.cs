@@ -15,7 +15,7 @@ namespace Inventory_Manager.Classes
             history = new Queue<Transaction>();
         }
 
-        public void AddTransaction(Transaction item)
+        public void AddToHistory(Transaction item)
         {
             history.Enqueue(item);
         }

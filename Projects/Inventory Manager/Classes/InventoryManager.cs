@@ -24,9 +24,9 @@ namespace Inventory_Manager.Classes
                 Console.WriteLine($"Item with ID '{item.Id}' already exists. Please use a unique ID.");
                 return;
             }
-            
+
             items.Add(item.Name, item);
-            history.AddTransaction(new Transaction {
+            history.AddToHistory(new Transaction {
                  ItemName = item.Name, 
                  Action = "Added", 
                  QuantityChange = item.Quantity });
@@ -37,7 +37,7 @@ namespace Inventory_Manager.Classes
             {
                 var item = items[name];
                 items.Remove(name);
-                history.AddTransaction(new Transaction {
+                history.AddToHistory(new Transaction {
                     ItemName = item.Name, 
                     Action = "Removed", 
                     QuantityChange = -item.Quantity });
