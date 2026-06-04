@@ -57,6 +57,42 @@ namespace Inventory_Manager.Classes
                 Console.WriteLine($"Found item: {items[name]?.Name}, Quantity: {items[name]?.Quantity}, Price: {items[name]?.Price}");
             }
         }
+
+        public void lookupItemRecursive(string partialName)
+        {
+            var matches = new List<Item>();
+
+            foreach (var item in items.Values)
+            {
+                FindMatchesRecursive(item, partialName, matches);
+            }
+
+            if (matches.Count == 0)
+            {
+                Console.WriteLine($"No items matching '{partialName}' were found.");
+                return;
+            }
+
+            Console.WriteLine($"Found {matches.Count} item(s) matching '{partialName}':");
+            foreach (var item in matches)
+            {
+                Console.WriteLine($"Item: {item.Name}, Quantity: {item.Quantity}, Price: {item.Price}");
+            }
+        }
+
+        private static void FindMatchesRecursive(Item item, string partialName, ICollection<Item> matches)
+        {
+            if (item.Name.Contains(partialName, StringComparison.OrdinalIgnoreCase))
+            {
+                matches.Add(item);
+            }
+
+            foreach (var child in item.Children)
+            {
+                FindMatchesRecursive(child, partialName, matches);
+            }
+        }
+
         public void lookupItem(int id)
         {
             var item = items.Values.FirstOrDefault(i => i.Id == id);

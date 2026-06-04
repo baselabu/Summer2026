@@ -11,8 +11,16 @@ namespace Inventory_Manager.Classes
         private int _quantity;
         private double _price;
         private int _id;
-
-        public int Id { 
+        public List<Item> Children
+         {
+            get => _children;
+            set => _children = value;
+        }
+        private List<Item> _children = new List<Item>(); 
+       
+        
+        public int Id 
+        { 
             get => _id;
             set
             {
