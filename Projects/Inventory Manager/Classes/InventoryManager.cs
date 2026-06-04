@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Inventory_Manager.Models;
+using System.Text.Json;
+using Inventory_Manager.Operations;
+using Inventory_Manager.Validations;
 
 namespace Inventory_Manager.Classes
 {
@@ -17,34 +20,13 @@ namespace Inventory_Manager.Classes
             history = new HistoryQueue();
         }
 
-        public void addItem(Item item)
+        public void AddItem(Item item)
         {
-            if (IdExists(item.Id))
-            {
-                Console.WriteLine($"Item with ID '{item.Id}' already exists. Please use a unique ID.");
-                return;
-            }
-
-            items.Add(item.Name, item);
-            history.AddToHistory(new Transaction {
-                 ItemName = item.Name, 
-                 Action = "Added", 
-                 QuantityChange = item.Quantity });
+            AddingItem.addItem(item, items, history);
         }
-        public void removeItem(string name)
+        public void RemoveItemByName(string name)
         {
-            if (items.ContainsKey(name))
-            {
-                var item = items[name];
-                items.Remove(name);
-                history.AddToHistory(new Transaction {
-                    ItemName = item.Name, 
-                    Action = "Removed", 
-                    QuantityChange = -item.Quantity });
-            }
-            else            {
-                Console.WriteLine($"Item with name '{name}' not found.");
-            }
+            RemoveItem.removeItem(name, items, history);
         }
         public void lookupItem(string name)
         {
@@ -109,14 +91,47 @@ namespace Inventory_Manager.Classes
         {
             history.ShowHistory();
         }
-    public void clearHistory()
+        public void clearHistory()
         {
             history.ClearHistory();
         }
-    public bool IdExists(int id)
+
+        public void SaveItemsToJson(string filePath)
         {
-            return items.Values.Any(item => item.Id == id);
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                IncludeFields = true
+            };
+            var json = JsonSerializer.Serialize(items.Values.ToList(), options);
+            File.WriteAllText(filePath, json);
+        }
+
+        public void LoadItemsFromJson(string filePath)
+        {
+            if (!File.Exists(filePath))
+            {
+                Console.WriteLine($"File '{filePath}' not found.");
+                return;
+            }
+
+            var json = File.ReadAllText(filePath);
+            var loadedItems = JsonSerializer.Deserialize<List<Item>>(json);
+
+            if (loadedItems != null)
+            {
+                items.Clear();
+                foreach (var item in loadedItems)
+                {
+                    items.Add(item.Name, item);
+                }
+                Console.WriteLine($"Loaded {loadedItems.Count} items from '{filePath}'.");
+            }
+            else
+            {
+                Console.WriteLine($"Failed to load items from '{filePath}'.");
+            }
         }
     }
-    
+
 }

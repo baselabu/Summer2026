@@ -8,10 +8,11 @@ Item nestedItem = new Item { Id = 3, Name = "Mini Gadget", Quantity = 2, Price =
 item2.Children.Add(nestedItem);
 
 InventoryManager inventory = new InventoryManager();
-inventory.addItem(item1);
-inventory.addItem(item2);
+inventory.AddItem(item1);
+inventory.AddItem(item2);
 inventory.lookupItem("Snickers");
 inventory.lookupItem(2);
 inventory.lookupItemRecursive("Gadget");
-inventory.removeItem("Gadget");
+inventory.SaveItemsToJson("inventory.json");
+inventory.RemoveItemByName("Gadget");
 inventory.showHistory();
