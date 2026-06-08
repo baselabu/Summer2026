@@ -7,6 +7,14 @@ namespace Inventory_Manager.Classes
 {
     public class Item
     {
+        public Item(int id, string name, int quantity, double price)
+        {
+            Id = id;
+            Name = name;
+            Quantity = quantity;
+            Price = price;
+        }
+  
         private string _name = "";
         private int _quantity;
         private double _price;
@@ -24,10 +32,7 @@ namespace Inventory_Manager.Classes
             get => _id;
             set
             {
-                if (value < 0)
-                {
-                    throw new ArgumentException("ID cannot be negative.");
-                }
+                if (value < 0) throw new ArgumentException("ID cannot be negative.");
                 _id = value;
             }
         }
@@ -36,10 +41,7 @@ namespace Inventory_Manager.Classes
             get => _name;
             set
             {
-            if (string.IsNullOrEmpty(value))
-            {
-                throw new ArgumentException("Name cannot be null or empty.");
-            }
+                if (string.IsNullOrEmpty(value)) throw new ArgumentException("Name cannot be null or empty.");
                 _name = value;
             }
         }
@@ -49,10 +51,7 @@ namespace Inventory_Manager.Classes
 
             set
             {
-                if (value < 0)
-                {
-                    throw new ArgumentException("Quantity cannot be negative.");
-                }
+                if (value < 0) throw new ArgumentException("Quantity cannot be negative.");
                 _quantity = value;
             }
         }
@@ -61,10 +60,7 @@ namespace Inventory_Manager.Classes
             get => _price;
             set
             {
-                if (value < 0)
-                {
-                    throw new ArgumentException("Price cannot be negative.");
-                }
+                if (value < 0) throw new ArgumentException("Price cannot be negative.");
                 _price = value;
             }
         }

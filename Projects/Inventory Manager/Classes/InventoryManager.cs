@@ -132,6 +132,18 @@ namespace Inventory_Manager.Classes
                 Console.WriteLine($"Failed to load items from '{filePath}'.");
             }
         }
+    
+    public void SortInventoryByName()
+    {
+        SortingBy.SortByName(items);
     }
-
+    public void SortInventoryByPrice()
+    {
+        SortingBy.SortByPrice(items);
+    }
+    public void SortInventoryByQuantity()
+    {
+        SortingBy.SortByQuantity(items);
+    }
+    }
 }
