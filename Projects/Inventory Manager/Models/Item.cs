@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Inventory_Manager.Classes
+namespace Inventory_Manager.Models
 {
     public class Item
     {
@@ -19,14 +19,12 @@ namespace Inventory_Manager.Classes
         private int _quantity;
         private double _price;
         private int _id;
+        private List<Item> _children = new List<Item>();     
         public List<Item> Children
          {
             get => _children;
             set => _children = value;
         }
-        private List<Item> _children = new List<Item>(); 
-       
-        
         public int Id 
         { 
             get => _id;

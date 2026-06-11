@@ -1,149 +1,162 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Inventory_Manager.Models;
-using System.Text.Json;
-using Inventory_Manager.Operations;
-using Inventory_Manager.Validations;
+using Inventory_Manager.Interfaces;
+using Inventory_Manager.SortingTypes;
 
 namespace Inventory_Manager.Classes
 {
     public class InventoryManager
     {
-        private Dictionary<string, Item> items;
-        private HistoryQueue history;
+        private readonly IItemRepository _itemRepository;
+        private readonly IHistoryService _historyService;
+        private readonly IPersistenceService _persistenceService;
+        private readonly IOutputWriter _output;
 
-        public InventoryManager()
+        public InventoryManager(
+            IItemRepository itemRepository,
+            IHistoryService historyService,
+            IPersistenceService persistenceService,
+            IOutputWriter output)
         {
-            items = new Dictionary<string, Item>();
-            history = new HistoryQueue();
+            _itemRepository = itemRepository ?? throw new ArgumentNullException(nameof(itemRepository));
+            _historyService = historyService ?? throw new ArgumentNullException(nameof(historyService));
+            _persistenceService = persistenceService ?? throw new ArgumentNullException(nameof(persistenceService));
+            _output = output ?? throw new ArgumentNullException(nameof(output));
         }
 
         public void AddItem(Item item)
         {
-            AddingItem.addItem(item, items, history);
+            _itemRepository.AddItem(item);
+            _historyService.AddToHistory(new Transaction
+            {
+                ItemName = item.Name,
+                Action = "Added",
+                QuantityChange = item.Quantity
+            });
         }
+
         public void RemoveItemByName(string name)
         {
-            RemoveItem.removeItem(name, items, history);
-        }
-        public void lookupItem(string name)
-        {
-            if (!items.ContainsKey(name))
+            var item = _itemRepository.GetItemByName(name);
+            if (item != null && _itemRepository.RemoveItem(name))
             {
-                Console.WriteLine($"Item with name '{name}' not found.");
+                _historyService.AddToHistory(new Transaction
+                {
+                    ItemName = item.Name,
+                    Action = "Removed",
+                    QuantityChange = -item.Quantity
+                });
+                _output.WriteSuccess($"Item '{name}' removed successfully.");
+            }
+        }
+
+        public void LookupItem(string name)
+        {
+            var item = _itemRepository.GetItemByName(name);
+            if (item == null)
+            {
+                _output.WriteError($"Item with name '{name}' not found.");
             }
             else
             {
-                Console.WriteLine($"Found item: {items[name]?.Name}, Quantity: {items[name]?.Quantity}, Price: {items[name]?.Price}");
+                DisplayItem(item);
             }
         }
 
-        public void lookupItemRecursive(string partialName)
+        public void LookupItem(int id)
         {
-            var matches = new List<Item>();
-
-            foreach (var item in items.Values)
+            var item = _itemRepository.GetItemById(id);
+            if (item == null)
             {
-                FindMatchesRecursive(item, partialName, matches);
+                _output.WriteError($"Item with ID '{id}' not found.");
             }
+            else
+            {
+                DisplayItem(item);
+            }
+        }
+
+        public void LookupItemRecursive(string partialName)
+        {
+            var matches = _itemRepository.FindItemsByPartialName(partialName);
 
             if (matches.Count == 0)
             {
-                Console.WriteLine($"No items matching '{partialName}' were found.");
+                _output.WriteError($"No items matching '{partialName}' were found.");
                 return;
             }
 
-            Console.WriteLine($"Found {matches.Count} item(s) matching '{partialName}':");
+            _output.WriteLine($"\nFound {matches.Count} item(s) matching '{partialName}':");
             foreach (var item in matches)
             {
-                Console.WriteLine($"Item: {item.Name}, Quantity: {item.Quantity}, Price: {item.Price}");
+                DisplayItem(item);
             }
+            _output.WriteLine("");
         }
 
-        private static void FindMatchesRecursive(Item item, string partialName, ICollection<Item> matches)
+        private void DisplayItem(Item item)
         {
-            if (item.Name.Contains(partialName, StringComparison.OrdinalIgnoreCase))
-            {
-                matches.Add(item);
-            }
-
-            foreach (var child in item.Children)
-            {
-                FindMatchesRecursive(child, partialName, matches);
-            }
+            _output.WriteLine($"  ID: {item.Id} | Name: {item.Name} | Qty: {item.Quantity} | Price: ${item.Price:F2}");
         }
-
-        public void lookupItem(int id)
+   
+        public void ShowHistory()
         {
-            var item = items.Values.FirstOrDefault(i => i.Id == id);
-            if (item == null)
-            {
-                Console.WriteLine($"Item with ID '{id}' not found.");
-            }
-            else
-            {
-                Console.WriteLine($"Found item: {item.Name}, Quantity: {item.Quantity}, Price: {item.Price}");
-            }
-        }
-        public void showHistory()
-        {
-            history.ShowHistory();
-        }
-        public void clearHistory()
-        {
-            history.ClearHistory();
+            _historyService.DisplayHistory();
         }
 
-        public void SaveItemsToJson(string filePath)
+        public void ClearHistory()
         {
-            JsonSerializerOptions options = new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                IncludeFields = true
-            };
-            var json = JsonSerializer.Serialize(items.Values.ToList(), options);
-            File.WriteAllText(filePath, json);
+            _historyService.ClearHistory();
         }
 
-        public void LoadItemsFromJson(string filePath)
+        public void SaveItems(string filePath)
         {
-            if (!File.Exists(filePath))
-            {
-                Console.WriteLine($"File '{filePath}' not found.");
-                return;
-            }
+            var items = _itemRepository.GetAllItems();
+            _persistenceService.SaveItems(items, filePath);
+        }
 
-            var json = File.ReadAllText(filePath);
-            var loadedItems = JsonSerializer.Deserialize<List<Item>>(json);
-
-            if (loadedItems != null)
+        public void LoadItems(string filePath)
+        {
+            var items = _persistenceService.LoadItems(filePath);
+            
+            _itemRepository.ClearItems();
+            foreach (var item in items)
             {
-                items.Clear();
-                foreach (var item in loadedItems)
-                {
-                    items.Add(item.Name, item);
-                }
-                Console.WriteLine($"Loaded {loadedItems.Count} items from '{filePath}'.");
-            }
-            else
-            {
-                Console.WriteLine($"Failed to load items from '{filePath}'.");
+                _itemRepository.AddItem(item);
             }
         }
-    
-    public void SortInventoryByName()
-    {
-        SortingBy.SortByName(items);
-    }
-    public void SortInventoryByPrice()
-    {
-        SortingBy.SortByPrice(items);
-    }
-    public void SortInventoryByQuantity()
-    {
-        SortingBy.SortByQuantity(items);
-    }
+
+        public void SortInventoryByName()
+        {
+            var SortingType = new SortByName(_output);
+            DisplaySortedItems(SortingType);
+        }
+
+        public void SortInventoryByPrice()
+        {
+            var SortingType = new SortByPrice(_output);
+            DisplaySortedItems(SortingType);
+        }
+ 
+        public void SortInventoryByQuantity()
+        {
+            var SortingType = new SortByQuantity(_output);
+            DisplaySortedItems(SortingType);
+        }
+
+ 
+        private void DisplaySortedItems(ISortingWay strategy)
+        {
+            var items = _itemRepository.GetAllItems();
+            var sortedItems = strategy.Sort(items);
+
+            _output.WriteLine($"\n{strategy.GetDescription()}");
+            foreach (var item in sortedItems)
+            {
+                DisplayItem(item);
+            }
+            _output.WriteLine("");        }
     }
 }
