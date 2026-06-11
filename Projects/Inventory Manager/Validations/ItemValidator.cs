@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Inventory_Manager.Models;
-using Inventory_Manager.Classes;
+using Inventory_Manager.Main;
 using Inventory_Manager.Interfaces;
 
 namespace Inventory_Manager.Validations

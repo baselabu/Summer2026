@@ -1,4 +1,4 @@
-﻿using Inventory_Manager.Classes;
+﻿using Inventory_Manager.Main;
 using Inventory_Manager.Models;
 using Inventory_Manager.Interfaces;
 using Inventory_Manager.Services;
@@ -16,8 +16,8 @@ InventoryManager inventory = new InventoryManager(itemRepository, historyService
 outputWriter.WriteLine("=== Inventory Management System ===\n");
 
 Item item1 = new Item(1, "Snickers", 10, 1.99);
-Item item2 = new Item(1, "Gadget", 5, 9.99);
-Item nestedItem = new Item(2, "Mini Gadget", 2, 4.99);
+Item item2 = new Item(2, "Gadget", 5, 9.99);
+Item nestedItem = new Item(3, "Mini Gadget", 2, 4.99);
 
 item2.Children.Add(nestedItem);
 

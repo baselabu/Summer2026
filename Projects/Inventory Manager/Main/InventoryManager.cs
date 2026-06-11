@@ -5,7 +5,7 @@ using Inventory_Manager.Models;
 using Inventory_Manager.Interfaces;
 using Inventory_Manager.SortingTypes;
 
-namespace Inventory_Manager.Classes
+namespace Inventory_Manager.Main
 {
     public class InventoryManager
     {
