@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TaskApi.Models;
+using TaskApi.DTOs;
 
 namespace TaskApi.Controllers
 {
@@ -23,29 +24,28 @@ namespace TaskApi.Controllers
         {
             return Ok(_tasks);
         }
+        [HttpGet("{id}")]
+        public IActionResult GetTask(int id)
+        {
+            var task = _tasks.FirstOrDefault(t => t.Id == id);
+            if (task == null)
+            {
+                return NotFound($"Task with Id {id} not found.");
+            }
+            return Ok(task);
+        }
 
         [HttpPost]
-        public IActionResult CreateTask(TaskItem task)
+        public IActionResult CreateTask(TaskItemDto taskDto)
         {
-            if (task.Id < 0)
-            {
-                return BadRequest("Task Id must be a non-negative integer.");
-            }
-
-            if (task == null || string.IsNullOrWhiteSpace(task.Title))
-            {
-                return BadRequest("Task title is required.");
-            }
-            
-            // check for existing id
-            if (_tasks.Any(t => t.Id == task.Id))
-            {
-                return BadRequest($"Task with Id {task.Id} already exists.");
-            }
+            var task = new TaskItem {
+                Id = _tasks.Count > 0 ? _tasks.Max(t => t.Id) + 1 : 0,
+                Title = taskDto.Title
+            };
             _tasks.Add(task);
-            return CreatedAtAction(nameof(GetTasks), new { id = task.Id }, task);
+            return CreatedAtAction(nameof(GetTask), new { id = task.Id }, task);
         }
-   
+        
         [HttpDelete("{id}")]
         public IActionResult DeleteTask(int id)
         {
@@ -59,18 +59,15 @@ namespace TaskApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateTask(int id, TaskItem task)
+        public IActionResult UpdateTask(int id, TaskItemDto taskDto)
         {
             var existingTask = _tasks.FirstOrDefault(t => t.Id == id);
             if (existingTask == null)
             {
                 return NotFound($"Task with Id {id} not found.");
             }
-            if (task == null || string.IsNullOrWhiteSpace(task.Title))
-            {
-                return BadRequest("Task title is required.");
-            }
-            existingTask.Title = task.Title;
+
+            existingTask.Title = taskDto.Title;
             return Ok(existingTask);
         }
     }
