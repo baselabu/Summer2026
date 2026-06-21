@@ -1,8 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using TaskApi.Data;
 using TaskApi.Models;
 using TaskApi.DTOs;
 
@@ -12,62 +10,75 @@ namespace TaskApi.Controllers
     [Route("/tasks")]
     public class TasksController : ControllerBase
     {
-        private static List<TaskItem> _tasks = new List<TaskItem>
+        private readonly AppDbContext _dbContext;
+
+        public TasksController(AppDbContext dbContext)
         {
-            new TaskItem { Id = 0, Title = "Task 1" },
-            new TaskItem { Id = 1, Title = "Task 2" },
-            new TaskItem { Id = 2, Title = "Task 3" }
-        };
+            _dbContext = dbContext;
+        }
 
         [HttpGet]
-        public IActionResult GetTasks()
+        public async Task<IActionResult> GetTasks()
         {
-            return Ok(_tasks);
+            var tasks = await _dbContext.TaskItems.AsNoTracking().ToListAsync();
+            return Ok(tasks);
         }
+
         [HttpGet("{id}")]
-        public IActionResult GetTask(int id)
+        public async Task<IActionResult> GetTask(int id)
         {
-            var task = _tasks.FirstOrDefault(t => t.Id == id);
+            var task = await _dbContext.TaskItems.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id);
             if (task == null)
             {
                 return NotFound($"Task with Id {id} not found.");
             }
+
             return Ok(task);
         }
 
         [HttpPost]
-        public IActionResult CreateTask(TaskItemDto taskDto)
+        public async Task<IActionResult> CreateTask(TaskItemDto taskDto)
         {
-            var task = new TaskItem {
-                Id = _tasks.Count > 0 ? _tasks.Max(t => t.Id) + 1 : 0,
-                Title = taskDto.Title
+            var task = new TaskItem
+            {
+                Title = taskDto.Title,
+                Name = taskDto.Name
             };
-            _tasks.Add(task);
+
+            _dbContext.TaskItems.Add(task);
+            await _dbContext.SaveChangesAsync();
+
             return CreatedAtAction(nameof(GetTask), new { id = task.Id }, task);
         }
         
         [HttpDelete("{id}")]
-        public IActionResult DeleteTask(int id)
+        public async Task<IActionResult> DeleteTask(int id)
         {
-            var task = _tasks.FirstOrDefault(t => t.Id == id);
+            var task = await _dbContext.TaskItems.FirstOrDefaultAsync(t => t.Id == id);
             if (task == null)
             {
                 return NotFound($"Task with Id {id} not found.");
             }
-            _tasks.Remove(task);
+
+            _dbContext.TaskItems.Remove(task);
+            await _dbContext.SaveChangesAsync();
+
             return Ok($"Task with Id {id} deleted successfully.");
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateTask(int id, TaskItemDto taskDto)
+        public async Task<IActionResult> UpdateTask(int id, TaskItemDto taskDto)
         {
-            var existingTask = _tasks.FirstOrDefault(t => t.Id == id);
+            var existingTask = await _dbContext.TaskItems.FirstOrDefaultAsync(t => t.Id == id);
             if (existingTask == null)
             {
                 return NotFound($"Task with Id {id} not found.");
             }
 
             existingTask.Title = taskDto.Title;
+            existingTask.Name = taskDto.Name;
+            await _dbContext.SaveChangesAsync();
+
             return Ok(existingTask);
         }
     }

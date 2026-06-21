@@ -11,5 +11,8 @@ namespace TaskApi.DTOs
     {
         [Required]
         public string Title { get; set; } = "";
+
+        [Required]
+        public string Name { get; set; } = "";
     }
 }
