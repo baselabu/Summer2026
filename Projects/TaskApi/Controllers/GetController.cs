@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using TaskApi.Data;
 using TaskApi.Models;
 using TaskApi.DTOs;
+using TaskApi.interfaces;
 
 namespace TaskApi.Controllers
 {
@@ -10,24 +11,24 @@ namespace TaskApi.Controllers
     [Route("/tasks")]
     public class TasksController : ControllerBase
     {
-        private readonly AppDbContext _dbContext;
+        private readonly ITaskRepository _taskRepository;
 
-        public TasksController(AppDbContext dbContext)
+        public TasksController(ITaskRepository taskRepository)
         {
-            _dbContext = dbContext;
+            _taskRepository = taskRepository;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetTasks()
         {
-            var tasks = await _dbContext.TaskItems.AsNoTracking().ToListAsync();
+            var tasks = await _taskRepository.GetAllTasks();
             return Ok(tasks);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTask(int id)
         {
-            var task = await _dbContext.TaskItems.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id);
+            var task = await _taskRepository.GetTaskById(id);
             if (task == null)
             {
                 return NotFound($"Task with Id {id} not found.");
@@ -37,16 +38,9 @@ namespace TaskApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateTask(TaskItemDto taskDto)
+        public async Task<IActionResult> CreateTask(CreatTaskItemDto taskDto)
         {
-            var task = new TaskItem
-            {
-                Title = taskDto.Title,
-                Name = taskDto.Name
-            };
-
-            _dbContext.TaskItems.Add(task);
-            await _dbContext.SaveChangesAsync();
+            var task = await _taskRepository.CreateTask(taskDto);
 
             return CreatedAtAction(nameof(GetTask), new { id = task.Id }, task);
         }
@@ -54,32 +48,25 @@ namespace TaskApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTask(int id)
         {
-            var task = await _dbContext.TaskItems.FirstOrDefaultAsync(t => t.Id == id);
-            if (task == null)
+            var task = await _taskRepository.DeleteTask(id);
+            if (!task)
             {
                 return NotFound($"Task with Id {id} not found.");
             }
-
-            _dbContext.TaskItems.Remove(task);
-            await _dbContext.SaveChangesAsync();
 
             return Ok($"Task with Id {id} deleted successfully.");
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTask(int id, TaskItemDto taskDto)
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdateTask(int id, UpdateTaskItemDto taskDto)                   
         {
-            var existingTask = await _dbContext.TaskItems.FirstOrDefaultAsync(t => t.Id == id);
-            if (existingTask == null)
+            var updated = await _taskRepository.UpdateTask(id, taskDto);
+            if (!updated)
             {
-                return NotFound($"Task with Id {id} not found.");
+                return NotFound($"Task with Id {id} not found, or no valid fields provided for update.");
             }
 
-            existingTask.Title = taskDto.Title;
-            existingTask.Name = taskDto.Name;
-            await _dbContext.SaveChangesAsync();
-
-            return Ok(existingTask);
+            return Ok($"Task with Id {id} updated successfully.");
         }
     }
 }

@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TaskApi.Data;
+using TaskApi.Services;     
+using TaskApi.interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,7 @@ builder.Services.AddControllers(); // Registers controller support.
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=tasks.db"));
 
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

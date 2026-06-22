@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TaskApi.DTOs
 {
-    public class TaskItemDto
+    public class CreatTaskItemDto
     {
         [Required]
         public string Title { get; set; } = "";
