@@ -13,6 +13,7 @@ builder.Services.AddControllers(); // Registers controller support.
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=tasks.db"));
 
+builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 var app = builder.Build();
 
