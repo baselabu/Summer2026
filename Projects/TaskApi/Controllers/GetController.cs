@@ -37,7 +37,7 @@ namespace TaskApi.Controllers
             if (task == null)
             {
                 _logger.LogWarning("Task with Id={TaskId} was not found.", id);
-                return NotFound($"Task with Id {id} not found.");
+                return NotFound($"Task with Id {id} is not found.");
             }
 
             return Ok(task);
