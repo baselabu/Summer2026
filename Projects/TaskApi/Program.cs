@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using TaskApi.Data;
 using TaskApi.Services;     
 using TaskApi.interfaces;
+using TaskApi.Models;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,8 +16,13 @@ builder.Services.AddControllers(); // Registers controller support.
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=tasks.db"));
 
+builder.Services.AddScoped<ITokenService, TokenService>();
+
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+builder.Services.AddScoped<PasswordHasher<User>>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

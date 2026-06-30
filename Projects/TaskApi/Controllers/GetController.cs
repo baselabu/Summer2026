@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TaskApi.Data;
@@ -10,6 +11,7 @@ namespace TaskApi.Controllers
 {
     [ApiController]
     [Route("/tasks")]
+    [Authorize]
     public class TasksController : ControllerBase
     {
         private readonly ITaskRepository _taskRepository;
