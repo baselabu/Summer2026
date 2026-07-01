@@ -28,7 +28,7 @@ namespace TaskApi.Controllers
         {
             _logger.LogInformation("HTTP GET /tasks requested.");
             var tasks = await _taskRepository.GetAllTasks();
-            return Ok(tasks);
+            return Ok(new { message = "You are authorized to view these tasks.", tasks });
         }
 
         [HttpGet("{id}")]

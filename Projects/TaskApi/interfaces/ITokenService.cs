@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TaskApi.Models;
 
 namespace TaskApi.interfaces
 {
     public interface ITokenService
     {
-        string GenerateToken(string username);
+        string GenerateToken(User user);
         
     }
 }
