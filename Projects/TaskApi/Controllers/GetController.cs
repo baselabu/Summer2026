@@ -1,9 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using TaskApi.Data;
-using TaskApi.Models;
 using TaskApi.DTOs;
 using TaskApi.interfaces;
 

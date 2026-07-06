@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using TaskApi.interfaces;
 using TaskApi.Models;
 using TaskApi.Data;
 using Microsoft.EntityFrameworkCore;
-using TaskApi.DTOs;
 
 
 namespace TaskApi.Services

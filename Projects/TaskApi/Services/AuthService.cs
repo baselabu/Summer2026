@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using TaskApi.DTOs;
 using TaskApi.interfaces;
 using TaskApi.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
 using TaskApi.Exceptions;
 using Microsoft.AspNetCore.Identity;
 
