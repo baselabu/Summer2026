@@ -6,6 +6,8 @@ using TaskApi.interfaces;
 using TaskApi.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Mvc;
+using TaskApi.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,14 +56,36 @@ app.UseExceptionHandler(errorApp =>
     {
         var exceptionHandlerFeature = context.Features.Get<IExceptionHandlerFeature>();
         var exception = exceptionHandlerFeature?.Error;
+        var statusCode = exception switch
+        {
+            NotFoundException => StatusCodes.Status404NotFound,
+            ValidationException => StatusCodes.Status400BadRequest,
+            UserAlreadyExistsException => StatusCodes.Status409Conflict,
+            _ => StatusCodes.Status500InternalServerError
+        };
+        var title = exception switch
+        {
+            NotFoundException => "Not Found",
+            ValidationException => "Validation Error",
+            UserAlreadyExistsException => "User Already Exists",
+            _ => "Internal Server Error"
+        };
 
-        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        context.Response.StatusCode = statusCode;
         context.Response.ContentType = "application/json";
 
         var logger = context.RequestServices.GetRequiredService<ILoggerFactory>().CreateLogger("GlobalExceptionHandler");
         logger.LogError(exception, "Unhandled exception while processing {Method} {Path}", context.Request.Method, context.Request.Path);
 
-        await context.Response.WriteAsync("{\"error\":\"An unexpected error occurred.\"}");
+        var problem = new ProblemDetails
+        {
+            Status = statusCode,
+            Title = title,
+            Detail = exception?.Message,
+            Instance = context.Request.Path,
+            Type = $"https://httpstatuses.com/{statusCode}"
+        };
+        await context.Response.WriteAsJsonAsync(problem);
     });
 });
 

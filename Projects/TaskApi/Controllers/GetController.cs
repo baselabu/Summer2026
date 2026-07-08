@@ -32,11 +32,6 @@ namespace TaskApi.Controllers
         {
             _logger.LogInformation("HTTP GET /tasks/{TaskId} requested.", id);
             var task = await _taskRepository.GetTaskById(id);
-            if (task == null)
-            {
-                _logger.LogWarning("Task with Id={TaskId} was not found.", id);
-                return NotFound($"Task with Id {id} is not found.");
-            }
 
             return Ok(task);
         }
@@ -54,12 +49,7 @@ namespace TaskApi.Controllers
         public async Task<IActionResult> DeleteTask(int id)
         {
             _logger.LogInformation("HTTP DELETE /tasks/{TaskId} requested.", id);
-            var task = await _taskRepository.DeleteTask(id);
-            if (!task)
-            {
-                _logger.LogWarning("Delete request for task Id={TaskId} could not be completed.", id);
-                return NotFound($"Task with Id {id} not found.");
-            }
+            await _taskRepository.DeleteTask(id);
 
             return Ok($"Task with Id {id} deleted successfully.");
         }
@@ -68,12 +58,7 @@ namespace TaskApi.Controllers
         public async Task<IActionResult> UpdateTask(int id, UpdateTaskItemDto taskDto)
         {
             _logger.LogInformation("HTTP PATCH /tasks/{TaskId} requested.", id);
-            var updated = await _taskRepository.UpdateTask(id, taskDto);
-            if (!updated)
-            {
-                _logger.LogWarning("Update request for task Id={TaskId} could not be completed.", id);
-                return NotFound($"Task with Id {id} not found, or no valid fields provided for update.");
-            }
+            await _taskRepository.UpdateTask(id, taskDto);
 
             return Ok($"Task with Id {id} updated successfully.");
         }

@@ -3,6 +3,7 @@ using TaskApi.interfaces;
 using TaskApi.Models;
 using TaskApi.Data;
 using TaskApi.DTOs;
+using TaskApi.Exceptions;
 
 namespace TaskApi.Services
 {
@@ -24,11 +25,16 @@ namespace TaskApi.Services
             return _dbContext.TaskItems.AsNoTracking().ToListAsync(); 
         }
 
-        public Task<TaskItem> GetTaskById(int id)
+        public async Task<TaskItem> GetTaskById(int id)
         {
             _logger.LogInformation("Retrieving task by Id={TaskId}.", id);
-            var task = _dbContext.TaskItems.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id);
-            return task!;
+            var task = await _dbContext.TaskItems.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id);
+            if (task == null)
+            {
+                throw new NotFoundException($"Task with Id {id} not found.");
+            }
+
+            return task;
         }
         public async Task<TaskItem> CreateTask(CreatTaskItemDto task)
         {
@@ -50,7 +56,7 @@ namespace TaskApi.Services
             if (task == null)
             {
                 _logger.LogWarning("Task with Id={TaskId} was not found for deletion.", id);
-                return false;
+                throw new NotFoundException($"Task with Id {id} not found.");
             }
 
             _dbContext.TaskItems.Remove(task);
@@ -66,7 +72,7 @@ namespace TaskApi.Services
             if (existingTask == null)
             {
                 _logger.LogWarning("Task with Id={TaskId} was not found for update.", id);
-                return false;
+                throw new NotFoundException($"Task with Id {id} not found.");
             }
 
             bool hasUpdates = false;
@@ -85,7 +91,7 @@ namespace TaskApi.Services
             if (!hasUpdates)
             {
                 _logger.LogWarning("Task with Id={TaskId} had no valid fields to update.", id);
-                return false;
+                throw new ValidationException("At least one valid field must be provided for update.");
             }
 
             await _dbContext.SaveChangesAsync();

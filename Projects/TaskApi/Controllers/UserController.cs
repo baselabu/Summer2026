@@ -3,13 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using TaskApi.DTOs;
-using TaskApi.Data;
-using TaskApi.Models;
 using TaskApi.interfaces;
-using TaskApi.Exceptions;
 
 namespace TaskApi.Controllers
 {
@@ -29,17 +24,9 @@ namespace TaskApi.Controllers
         public async Task<IActionResult> Register(RegisterDto UserRegisterDto)
         {
             _logger.LogInformation("Received registration request for Username={Username}.", UserRegisterDto.Username);
-            try
-            {
-                await _authService.RegisterAsync(UserRegisterDto);
-                _logger.LogInformation("User with Username={Username} registered successfully.", UserRegisterDto.Username);
-                return Ok("User registered successfully.");
-            }
-            catch (UserAlreadyExistsException ex)
-            {
-                _logger.LogWarning("User registration failed: {ErrorMessage}", ex.Message);
-                return Conflict(new { error = ex.Message });
-            }
+            await _authService.RegisterAsync(UserRegisterDto);
+            _logger.LogInformation("User with Username={Username} registered successfully.", UserRegisterDto.Username);
+            return Ok("User registered successfully.");
         }  
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto)
